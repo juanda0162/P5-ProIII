@@ -3,15 +3,19 @@ package org.example.gui;
 import org.example.objetos.Arbol;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DibujoArbol {
     private static final int ESPACIO_HORIZONTAL = 20;
     private static final int ESPACIO_VERTICAL = 50;
     private static final int TAMANO_NODO = 50;
     private final Arbol<String> modelo;
+    private HashMap<Rectangle, String> nodoCoordenadas;
 
     public DibujoArbol(Arbol<String> modelo) {
         this.modelo = modelo;
+        this.nodoCoordenadas = new HashMap<>();
     }
 
     public void dibujar(Graphics g) {
@@ -37,6 +41,10 @@ public class DibujoArbol {
             dibujarNodo(hijo, xHijo, yHijo, g);
             xHijo += avanzar;
         }
+
+        Rectangle nodoRect = new Rectangle(xNodo, y, TAMANO_NODO, TAMANO_NODO);
+        nodoCoordenadas.put(nodoRect, nodo.getContenido());
+
         g.setColor(Color.white);
         g.fillOval(xNodo, y,
                 TAMANO_NODO, TAMANO_NODO);
@@ -60,5 +68,15 @@ public class DibujoArbol {
             espacio = ESPACIO_HORIZONTAL;
         }
         return ancho;
+    }
+
+    public String obtenerNodoClic(int xClic, int yClic) {
+        for (Map.Entry<Rectangle, String> entry : nodoCoordenadas.entrySet()) {
+            Rectangle rect = entry.getKey();
+            if (rect.contains(xClic, yClic)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 }
